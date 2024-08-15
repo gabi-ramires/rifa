@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'  # Ajuste para a versão do PHP que você está usando
+
+    - name: Install Composer
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        sudo mv composer.phar /usr/local/bin/composer
+        composer --version
+
+    - name: Install PHP Dependencies
+      run: |
+        composer install --no-dev --optimize-autoloader
+
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: 34.123.197.10
+        username: gabriela_cacto
+        key: b3BlbnNzaC1rZXktdjEAAAAACmFlczI1Ni1jdHIAAAAGYmNyeXB0AAAAGAAAABBTTkJKzt
+              3LTSJXPntiRtk6AAAAEAAAAAEAAABoAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlz
+              dHAyNTYAAABBBAEUn2DsfY/4+rOFHKntHjfOtxaywSz1y8fpwPhCEXWWSkfnwM590TINnt
+              5DMm8zS5QVRUYmFw/Y1Iw7RnHIGfsAAADQ+ZratmHDIbtt62FELYTuAyC2VsSdTHc5EpOM
+              iG41UjtL5aMDddwPhVE8/qO8kX46wSAOCzYMPEFYXQqaSE054j2vSbF/lrgHaej9FudLFg
+              gMXLNMEheRqaPaufFK38vFUojZWXFFixmboGd6+d1YvpZn2zGIg/shMn2SaB9KHaYfRNjl
+              n0ogFnc8jVk6nMCypMc4n+s09Ha5aDfW74es3w0avjVReBdJg8QodGDEEtYzpi+V8eY/Eq
+              aMIXtOxoKUElr56jPTJfWCq33e/3Ywfg==
+
+        script: |
+          cd /var/www/html
+          git pull origin master
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate --force
+
