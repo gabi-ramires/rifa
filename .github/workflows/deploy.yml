@@ -42,6 +42,10 @@ jobs:
       run: |
             rsync -avz --delete --exclude='.git' --exclude='node_modules' --exclude='.env' ./ gabriela_cacto@34.123.197.10:/var/www/html
    
-    - name: php artisan serve
+    - name: Run Laravel migrations
       run: |
-            php artisan serve --host=0.0.0.0 --port=3000
+        php artisan migrate
+
+    - name: Start Laravel Server
+      run: |
+        nohup php artisan serve --host=0.0.0.0 --port=3000 > server.log 2>&1 &
