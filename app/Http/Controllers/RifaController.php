@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Rifa;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\ControleRifaController;
 
 class RifaController extends Controller
 {
@@ -16,7 +17,8 @@ class RifaController extends Controller
         $validatedData = $request->validate([
             'nome' => 'required|string|max:255',
             'descricao' => 'required|string|max:255',
-            'preco' => 'required|numeric|min:0', // Garante que o preço seja um número decimal
+            'preco' => 'required|numeric|min:0',
+            'total_rifas' => 'required|numeric|min:0|max:500',
         ]);
 
         // Obter o ID do usuário logado
@@ -26,9 +28,24 @@ class RifaController extends Controller
         $rifa = Rifa::create([
             'nome' => $validatedData['nome'],
             'descricao' => $validatedData['descricao'],
-            'preco' => $validatedData['preco'], // Formata o preço para decimal
+            'preco' => $validatedData['preco'],
+            'total_rifas' => $validatedData['total_rifas'],
             'user_id' => $userId,
         ]);
+
+        // Cria o controle dos números das rifas
+        $controle = new ControleRifaController;
+
+        for ($numero=1; $numero <= $rifa->total_rifas; $numero++) { 
+            $request_controler = [
+                'rifa_id' => $rifa->id,
+                'user_id' => $userId,
+                'numero' => $numero
+            ];
+            $request = new Request($request_controler);
+    
+            $controle->store($request);
+        }
 
         return response()->json($rifa, 201);
     }
@@ -69,6 +86,7 @@ class RifaController extends Controller
             'nome' => 'sometimes|required|string|max:255',
             'descricao' => 'sometimes|required|string|max:255',
             'preco' => 'sometimes|required|numeric|min:0',
+            'total_rifas' => 'required|numeric|min:0|max:500',
         ]);
 
         // Atualiza os dados do usuário com os valores validados
@@ -82,8 +100,12 @@ class RifaController extends Controller
             $rifa->preco = $validatedData['preco'];
         }
 
+        if (isset($validatedData['total_rifas'])) {
+            $rifa->total_rifas = $validatedData['total_rifas'];
+        }
+
         // Salva as alterações no banco de dados
-        $rifa->save();
+        $res = $rifa->save();
 
         // Retorna a rifa atualizada como resposta JSON
         return response()->json($rifa);
@@ -101,6 +123,11 @@ class RifaController extends Controller
 
         // Deleta a rifa
         $rifa->delete();
+
+        // Remove todos os números da rifa
+        $controle = new ControleRifaController;
+        $controle->deleteByRifaId($id);
+        
 
         // Retorna uma resposta de sucesso
         return response()->json(['message' => 'Rifa excluída com sucesso.']);

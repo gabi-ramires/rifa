@@ -14,8 +14,10 @@ class Rifa extends Model
 
     // Define os campos que podem ser preenchidos em massa
     protected $fillable = [
+        'user_id',
         'nome',
         'descricao',
         'preco',
+        'total_rifas'
     ];
 }
