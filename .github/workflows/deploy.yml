@@ -41,4 +41,8 @@ jobs:
     - name: Deploy via SSH
       run: |
             rsync -avz --delete --exclude='.git' --exclude='node_modules' --exclude='.env' ./ gabriela_cacto@34.123.197.10:/var/www/html
-
+   
+    - name: php artisan serve
+      run: |
+            cd /var/www/html
+            php artisan serve --host=0.0.0.0 --port=3000
