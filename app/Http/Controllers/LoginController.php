@@ -46,6 +46,6 @@ class LoginController extends Controller
         // Revoke the user's current token
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logout realizaod com sucesso.']);
+        return response()->json(['message' => 'Logout realizado com sucesso.']);
     }
 }
