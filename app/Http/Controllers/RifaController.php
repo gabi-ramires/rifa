@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Rifa;
 use Illuminate\Support\Facades\Hash;
@@ -17,12 +18,16 @@ class RifaController extends Controller
             'descricao' => 'required|string|max:255',
             'preco' => 'required|numeric|min:0', // Garante que o preço seja um número decimal
         ]);
+
+        // Obter o ID do usuário logado
+        $userId = Auth::id();
     
         // Criação da rifa com os dados validados
         $rifa = Rifa::create([
             'nome' => $validatedData['nome'],
             'descricao' => $validatedData['descricao'],
             'preco' => $validatedData['preco'], // Formata o preço para decimal
+            'user_id' => $userId,
         ]);
 
         return response()->json($rifa, 201);
