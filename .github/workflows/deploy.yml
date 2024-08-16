@@ -28,8 +28,16 @@ jobs:
       run: |
         composer install --no-dev --optimize-autoloader
 
+    - name: Add SSH known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 34.123.197.10 >> ~/.ssh/known_hosts
+
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.6.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
     - name: Deploy via SSH
       run: |
         rsync -avz --delete --exclude='.git' --exclude='node_modules' ./ gabriela_cacto@34.123.197.10:/var/www/html
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
