@@ -18,5 +18,5 @@ Route::get('/', function () {
 });
 
 Route::get('/api', function () {
-    return 'API okkkkkkkk';
+    return 'API ok uhuuuu';
 });
