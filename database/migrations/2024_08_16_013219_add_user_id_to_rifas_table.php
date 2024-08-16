@@ -4,26 +4,30 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddUserIdToRifasTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('rifas', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->after('preco');
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('rifas', function (Blueprint $table) {
-            $table->dropForeign(['user_id']); // Remove a chave estrangeira
-            $table->dropColumn('user_id'); // Remove a coluna `user_id`
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
         });
     }
-};
+}
