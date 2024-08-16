@@ -38,12 +38,17 @@ class ControleRifaController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'rifa_id' => 'required|exists:rifas,id',
-            'user_id' => 'required|exists:users,id',
-            'numero' => 'required|integer',
-            'nome_comprador' => 'required|string|max:255',
+            'rifa_id' => 'nullable|exists:rifas,id',
+            'user_id' => 'nullable|exists:users,id',
+            'numero' => 'nullable|integer',
+            'nome_comprador' => 'nullable|string|max:255',
         ]);
 
+        $request['data_compra'] = now();
+        if($request['nome_comprador'] == "") {
+            $request['data_compra'] =  null;   
+        }
+        
         $controleRifa = ControleRifa::findOrFail($id);
         $controleRifa->update($request->all());
         return response()->json($controleRifa);
@@ -54,7 +59,7 @@ class ControleRifaController extends Controller
     {
         $controleRifa = ControleRifa::findOrFail($id);
         $controleRifa->delete();
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Número excluído com sucesso.']);
     }
 
     public function deleteByRifaId($rifaId)
