@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/api', function () {
     return 'API ok';
 });
+
+Route::get('/log', function () {
+    return view('log');
+});
