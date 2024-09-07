@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return ["Rifa-api", now()->toDateTimeString(), config('app.env')];
+})->middleware('throttle:10,1');
 
 Route::get('/api', function () {
-    return 'API okkk';
+    return 'API ok';
 });
