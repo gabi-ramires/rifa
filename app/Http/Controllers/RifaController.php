@@ -15,22 +15,20 @@ class RifaController extends Controller
     {
         // Validação dos dados recebidos
         $validatedData = $request->validate([
+            'user_id' => 'required|numeric|min:0',
             'nome' => 'required|string|max:255',
             'descricao' => 'required|string|max:255',
             'preco' => 'required|numeric|min:0',
             'total_rifas' => 'required|numeric|min:0|max:500',
         ]);
-
-        // Obter o ID do usuário logado
-        $userId = Auth::id();
     
         // Criação da rifa com os dados validados
         $rifa = Rifa::create([
+            'user_id' => $validatedData['user_id'],
             'nome' => $validatedData['nome'],
             'descricao' => $validatedData['descricao'],
             'preco' => $validatedData['preco'],
             'total_rifas' => $validatedData['total_rifas'],
-            'user_id' => $userId,
         ]);
 
         // Cria o controle dos números das rifas
@@ -39,7 +37,7 @@ class RifaController extends Controller
         for ($numero=1; $numero <= $rifa->total_rifas; $numero++) { 
             $request_controler = [
                 'rifa_id' => $rifa->id,
-                'user_id' => $userId,
+                'user_id' => $rifa->user_id,
                 'numero' => $numero
             ];
             $request = new Request($request_controler);
