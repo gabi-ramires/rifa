@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
+    nginx \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Instalar Composer
@@ -24,12 +25,15 @@ COPY . .
 # Instalar dependências do Laravel
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Copiar permissões adequadas
+# Configurar permissões adequadas
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage
 
-# Expor a porta do PHP-FPM
-EXPOSE 9000
+# Copiar configuração do Nginx
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Iniciar o servidor
-CMD ["php-fpm"]
+# Expor a porta do Nginx
+EXPOSE 80
+
+# Iniciar Nginx e PHP-FPM
+CMD ["sh", "-c", "service nginx start && php-fpm"]
