@@ -14,7 +14,6 @@ services:
       - "9000:9000"
     networks:
       - laravel
-    command: sh -c "php artisan migrate && php-fpm"
 
   # Serviço do banco de dados MySQL
   mysql:
