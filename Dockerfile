@@ -30,7 +30,7 @@ RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage
 
 # Copiar configuração do Nginx
-COPY ./docker/xginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 
 # Expor a porta do Nginx
