@@ -31,8 +31,5 @@ RUN chown -R www-data:www-data /var/www \
 # Expor a porta do PHP-FPM
 EXPOSE 9000
 
-# Expor a porta 80 para o Nginx
-EXPOSE 80
-
-# Iniciar o servidor
+# Iniciar o servidor PHP-FPM
 CMD ["php-fpm"]

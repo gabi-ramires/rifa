@@ -35,7 +35,7 @@ services:
     container_name: laravel_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "${PORT}:9000"
     volumes:
       - .:/var/www
       - ./docker/nginx:/etc/nginx/conf.d
